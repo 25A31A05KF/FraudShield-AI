@@ -108,7 +108,7 @@ Open index.html in browser
 (or use VS Code Live Server)  
 # 🧪 Demo Credentials (for judges)
 Admin Login  
-Copy code  
+
 
 Username: admin  
 Password: 1234  
