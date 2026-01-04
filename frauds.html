@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="https://www.gstatic.com/charts/loader.js"></script>
+<meta charset="UTF-8">
+<title>Frauds</title>
+<!-- Google Font: Roboto -->
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+body {
+    margin:0;
+    font-family: 'Roboto', Arial, sans-serif;
+    background: #eef2f3;
+}
+.page-wrapper {
+    min-height: 100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+.content-card {
+    background:white;
+    width:90%;
+    max-width:600px;
+    padding:40px;
+    border-radius:15px;
+    box-shadow:0 10px 25px rgba(0,0,0,0.2);
+    text-align:center;
+}
+.top-home {
+    text-align:center;
+    margin-bottom:20px;
+}
+.top-home a {
+    padding:10px 20px;
+    background: #1f3c5b;
+    color:white;
+    border-radius:25px;
+    text-decoration:none;
+    font-weight:bold;
+}
+.fraud-buttons button {
+    width:100%;
+    padding:18px;
+    margin:15px 0;
+    font-size:18px;
+    font-weight:bold;
+    border-radius:25px;
+    border:none;
+    cursor:pointer;
+    background: linear-gradient(135deg, #ff6a00, #ee0979);
+    color:white;
+    transition: 0.3s;
+}
+.fraud-buttons button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+}
+textarea, input {
+    width:100%;
+    padding:10px;
+    margin-bottom:15px;
+    border-radius:8px;
+    border:1px solid #ccc;
+}
+.check-button {
+    width:100%;
+    padding:15px;
+    border:none;
+    border-radius:25px;
+    background: linear-gradient(135deg, #43cea2, #185a9d);
+    color:white;
+    font-weight:bold;
+    cursor:pointer;
+}
+.check-button:hover {
+    opacity:0.9;
+}
+.result {
+    margin-top:20px;
+    padding:15px;
+    border-radius:12px;
+    font-weight:bold;
+    display:none;
+    font-size:18px;
+}
+.result.safe {
+    background:#d4edda;
+    color:#155724;
+}
+.result.fraud {
+    background:#f8d7da;
+    color:#721c24;
+}
+.result i {
+    margin-right:10px;
+}
+/* ========================= */
+/* 🌙 GLOBAL DARK MODE CSS */
+/* ========================= */
+
+body.dark {
+    background: #121212;
+    color: #f1f1f1;
+}
+
+/* Cards / white boxes */
+body.dark .login-card,
+body.dark .content-card,
+body.dark .card {
+    background: #1e1e1e;
+    color: #f1f1f1;
+}
+
+/* Inputs */
+body.dark input,
+body.dark textarea {
+    background: #2c2c2c;
+    color: white;
+    border: 1px solid #444;
+}
+
+body.dark input::placeholder {
+    color: #aaa;
+}
+
+/* Buttons */
+body.dark button {
+    color: white;
+}
+
+/* OR divider lines */
+body.dark .or-divider::before,
+body.dark .or-divider::after {
+    background: #555;
+}
+/* 🌙 Dark mode toggle button */
+.theme-toggle {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: none;
+    background: #f1f1f1;
+    font-size: 18px;
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+}
+
+/* Dark mode button color */
+body.dark .theme-toggle {
+    background: #2c2c2c;
+    color: white;
+}
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<!-- Google Charts -->
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.16.0"></script>
+<body>
+    <script>
+if (!sessionStorage.getItem("loggedIn")) {
+    window.location.href = "login.html";
+}
+</script>
+
+<div class="top-home">
+    <a href="index.html">Home</a>
+</div>
+
+<div class="page-wrapper">
+    <div class="content-card">
+        <button class="theme-toggle" onclick="toggleTheme()">🌙</button>
+
+        <h1 id="pageHeading">Fraud Detection Tools</h1>
+        <hr>
+        <hr style="margin:30px 0;">
+
+<h2 style="text-align:center;">Fraud History Dashboard</h2>
+
+<div style="text-align:center; margin-bottom:15px;">
+    <button onclick="clearHistory()" class="check-button" style="background:#777;">
+        Clear History
+    </button>
+</div>
+<div id="fraudChart" style="width:100%; height:280px; margin-bottom:10px;"></div>
+<div id="historyList"></div>
+       
+
+        
+        <div class="fraud-buttons" id="fraudOptions">
+            <button onclick="showMessageForm()">Message Detection</button>
+            <button onclick="showTransactionForm()">Fake Transaction</button>
+        </div>
+
+        
+        <div id="messageForm" style="display:none; margin-top:20px;">
+            <textarea id="messageInput" rows="4" placeholder="Paste your message here"></textarea>
+            <button class="check-button" onclick="checkMessage()">Check Message</button>
+            <div id="messageResult" class="result"></div>
+            <!-- Risk Meter -->
+<div id="riskMeter" style="display:none; margin-top:20px;">
+    <div style="font-weight:bold; margin-bottom:8px;">Fraud Risk Level</div>
+    <div style="background:#dddddd; border-radius:20px; overflow:hidden;">
+        <div id="riskBar" style="
+            height:20px;
+            width:0%;
+            background:green;
+            border-radius:20px;
+            transition: width 0.5s;">
+        </div>
+    </div>
+    <div id="riskPercent" style="margin-top:8px; font-weight:bold;"></div>
+</div>
+
+<!-- Explainable AI -->
+<div id="aiExplain" style="display:none; margin-top:15px; font-size:14px;"></div>
+        </div>
+
+        
+        <div id="transactionForm" style="display:none; margin-top:20px;">
+            <input type="number" id="amount" placeholder="Enter Amount">
+            <input type="text" id="location" placeholder="Location">
+            <input type="time" id="time">
+            <input type="text" id="device" placeholder="User Device">
+            <button class="check-button" onclick="checkTransaction()">Check Transaction</button>
+            <div id="transactionResult" class="result"></div>
+            <!-- Transaction Risk Meter -->
+<div id="txRiskMeter" style="display:none; margin-top:20px;">
+    <div style="font-weight:bold; margin-bottom:8px;">Transaction Risk Level</div>
+    <div style="background:#ddd; border-radius:20px; overflow:hidden;">
+        <div id="txRiskBar" style="
+            height:20px;
+            width:0%;
+            background:green;
+            border-radius:20px;
+            transition: width 0.5s;">
+        </div>
+    </div>
+    <div id="txRiskPercent" style="margin-top:8px; font-weight:bold;"></div>
+</div>
+
+<div id="txExplain" style="display:none; margin-top:15px; font-size:14px;"></div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+function showMessageForm(){
+    document.getElementById('fraudOptions').style.display='none';
+    document.getElementById('messageForm').style.display='block';
+    document.getElementById('transactionForm').style.display='none';
+    document.getElementById('pageHeading').innerText = "Message Detection"; // Change heading
+}
+
+function showTransactionForm(){
+    document.getElementById('fraudOptions').style.display='none';
+    document.getElementById('messageForm').style.display='none';
+    document.getElementById('transactionForm').style.display='block';
+    document.getElementById('pageHeading').innerText = "Fake Transaction"; // Change heading
+}
+async function checkMessage(){
+    const msg = document.getElementById("messageInput").value.trim();
+    const result = document.getElementById("messageResult");
+    const meter = document.getElementById("riskMeter");
+    const bar = document.getElementById("riskBar");
+    const percentText = document.getElementById("riskPercent");
+    const explain = document.getElementById("aiExplain");
+
+    if (!msg) {
+        result.style.display = "block";
+        result.className = "result safe";
+        result.innerHTML = "⚠️ Please enter a message";
+        return;
+    }
+
+    const features = extractFeatures(msg);
+    const input = tf.tensor2d([features]);
+    const prediction = model.predict(input);
+    let risk = Math.round((await prediction.data())[0] * 100);
+
+    // Reduce neutral 50% issue
+    if (features.every(v => v === 0)) {
+        risk = 10;
+    }
+
+    // Show result box
+    result.style.display = "block";
+
+    if (risk > 60) {
+        result.className = "result fraud";
+        result.innerHTML = `⚠️ Fraud Detected<br>AI Risk Score: <b>${risk}%</b>`;
+    } 
+    else if (risk >= 40) {
+        result.className = "result safe";
+        result.innerHTML = `ℹ️ Medium Risk<br>AI Risk Score: <b>${risk}%</b>`;
+    } 
+    else {
+        result.className = "result safe";
+        result.innerHTML = `✅ Looks Safe<br>AI Risk Score: <b>${risk}%</b>`;
+    }
+    saveHistory(
+    "Message",
+    risk,
+    risk > 60 ? "Fraud" : risk >= 40 ? "Medium Risk" : "Safe",
+    msg
+);
+
+
+    /* ---------- VISUAL ANALYTICS ---------- */
+
+    // Risk Meter
+    meter.style.display = "block";
+    bar.style.width = risk + "%";
+    percentText.innerText = risk + "% Risk";
+
+    if (risk < 40) bar.style.background = "green";
+    else if (risk < 60) bar.style.background = "orange";
+    else bar.style.background = "red";
+
+    // Explainable AI
+    explain.style.display = "block";
+    explain.innerHTML = "<b>Why this result?</b><ul>";
+
+    features.forEach((val, i) => {
+        if (val === 1) {
+            explain.innerHTML += `<li>✔ ${featureLabels[i]}</li>`;
+        }
+    });
+
+    if (features.every(v => v === 0)) {
+        explain.innerHTML += "<li>✔ No suspicious patterns found</li>";
+    }
+
+    explain.innerHTML += "</ul>";
+}
+
+async function checkTransaction(){
+    const amount = document.getElementById("amount").value.trim();
+    const location = document.getElementById("location").value.trim();
+    const time = document.getElementById("time").value.trim();
+    const device = document.getElementById("device").value.trim();
+
+    const result = document.getElementById("transactionResult");
+    const meter = document.getElementById("txRiskMeter");
+    const bar = document.getElementById("txRiskBar");
+    const percentText = document.getElementById("txRiskPercent");
+    const explain = document.getElementById("txExplain");
+
+    if (!amount || !location || !time || !device) {
+        result.style.display = "block";
+        result.className = "result safe";
+        result.innerHTML = "⚠️ Please fill all transaction fields";
+        return;
+    }
+
+    const features = extractTransactionFeatures(amount, location, time, device);
+    const input = tf.tensor2d([features]);
+    const prediction = transactionModel.predict(input);
+    let risk = Math.round((await prediction.data())[0] * 100);
+
+    if (features.every(v => v === 0)) {
+        risk = 15;
+    }
+
+    result.style.display = "block";
+
+    if (risk > 60) {
+        result.className = "result fraud";
+        result.innerHTML = `⚠️ Fraudulent Transaction<br>AI Risk Score: <b>${risk}%</b>`;
+    }
+    else if (risk >= 40) {
+        result.className = "result safe";
+        result.innerHTML = `ℹ️ Medium Risk Transaction<br>AI Risk Score: <b>${risk}%</b>`;
+    }
+    else {
+        result.className = "result safe";
+        result.innerHTML = `✅ Transaction Looks Safe<br>AI Risk Score: <b>${risk}%</b>`;
+    }
+    saveHistory(
+    "Transaction",
+    risk,
+    risk > 60 ? "Fraud" : risk >= 40 ? "Medium Risk" : "Safe",
+    `Amount: ${amount}, Time: ${time}, Location: ${location}, Device: ${device}, Browser: ${getDeviceInfo()}`
+);
+
+    /* ---------- VISUAL ANALYTICS ---------- */
+
+    meter.style.display = "block";
+    bar.style.width = risk + "%";
+    percentText.innerText = risk + "% Risk";
+
+    if (risk < 40) bar.style.background = "green";
+    else if (risk < 60) bar.style.background = "orange";
+    else bar.style.background = "red";
+
+    explain.style.display = "block";
+    explain.innerHTML = "<b>Why this transaction was flagged?</b><ul>";
+
+    features.forEach((val, i) => {
+        if (val === 1) {
+            explain.innerHTML += `<li>✔ ${transactionFeatureLabels[i]}</li>`;
+        }
+    });
+
+    if (features.every(v => v === 0)) {
+        explain.innerHTML += "<li>✔ No suspicious transaction patterns</li>";
+    }
+
+    explain.innerHTML += "</ul>";
+}
+let model;
+
+async function loadModel() {
+    model = tf.sequential();
+
+    model.add(tf.layers.dense({inputShape:[5], units:8, activation:'relu'}));
+    model.add(tf.layers.dense({units:1, activation:'sigmoid'}));
+
+    model.compile({
+        optimizer: 'adam',
+        loss: 'binaryCrossentropy'
+    });
+
+    // Better training samples
+    const xs = tf.tensor2d([
+        [1,1,1,1,1],  // high fraud
+        [1,1,0,1,1],
+        [1,0,1,1,1],
+        [0,0,0,0,0],  // safe
+        [0,0,0,0,1],
+        [0,0,0,0,0]
+    ]);
+
+    const ys = tf.tensor2d([
+        [1],[1],[1],
+        [0],[0],[0]
+    ]);
+
+    await model.fit(xs, ys, {epochs:80});
+}
+
+loadModel();
+</script>
+<script>
+function extractFeatures(text){
+    text = text.toLowerCase();
+
+    return [
+        text.includes("urgent") ? 1 : 0,
+        text.includes("otp") ? 1 : 0,
+        text.includes("click") || text.includes("verify") ? 1 : 0,
+        text.includes("win") || text.includes("money") ? 1 : 0,
+        text.includes("http") || text.includes("link") ? 1 : 0
+    ];
+}
+const featureLabels = [
+    "Urgent keyword detected",
+    "OTP mentioned",
+    "Suspicious action (click/verify)",
+    "Money / Prize related",
+    "Link detected"
+];
+</script>
+<script>
+function extractTransactionFeatures(amount, location, time, device) {
+
+    const amt = parseFloat(amount);
+    const hour = parseInt(time.split(":")[0]);
+
+    /* -------- Location Risk -------- */
+    let locationRisk = 0;
+    location = location.toLowerCase();
+
+    if (
+        location.includes("unknown") ||
+        location.includes("new") ||
+        location.includes("foreign")
+    ) {
+        locationRisk = 1;
+    }
+
+    /* -------- Time Anomaly -------- */
+    let timeRisk = 0;
+    if (hour < 6 || hour > 23) {
+        timeRisk = 1; // odd hours
+    }
+
+    /* -------- Device Risk -------- */
+    let deviceRisk = device.toLowerCase().includes("new") ? 1 : 0;
+
+    /* -------- Amount Risk -------- */
+    let amountRisk = amt > 50000 ? 1 : 0;
+
+    return [
+        amountRisk,
+        timeRisk,
+        locationRisk,
+        deviceRisk
+    ];
+}
+</script>
+<script>
+const transactionFeatureLabels = [
+    "High transaction amount",
+    "Unusual transaction time",
+    "Suspicious location",
+    "New or untrusted device"
+];
+</script>
+<script>
+let transactionModel;
+
+async function loadTransactionModel() {
+    transactionModel = tf.sequential();
+
+    transactionModel.add(tf.layers.dense({inputShape:[4], units:8, activation:'relu'}));
+    transactionModel.add(tf.layers.dense({units:1, activation:'sigmoid'}));
+
+    transactionModel.compile({
+        optimizer: 'adam',
+        loss: 'binaryCrossentropy'
+    });
+
+    const xs = tf.tensor2d([
+        [1,1,1,1],
+        [1,0,1,1],
+        [1,1,0,1],
+        [0,0,0,0],
+        [0,0,0,1],
+        [0,0,0,0]
+    ]);
+
+    const ys = tf.tensor2d([
+        [1],[1],[1],
+        [0],[0],[0]
+    ]);
+
+    await transactionModel.fit(xs, ys, {epochs:80});
+}
+
+loadTransactionModel();
+</script>
+<script>
+function saveHistory(type, risk, status, details) {
+    const history = JSON.parse(localStorage.getItem("fraudHistory")) || [];
+
+    history.unshift({
+        type,
+        risk,
+        status,
+        details,
+        time: new Date().toLocaleString()
+    });
+
+    localStorage.setItem("fraudHistory", JSON.stringify(history));
+    renderHistory();
+}
+
+function renderHistory() {
+    const history = JSON.parse(localStorage.getItem("fraudHistory")) || [];
+    const container = document.getElementById("historyList");
+
+    if (history.length === 0) {
+        container.innerHTML = "<p style='text-align:center;'>No history yet</p>";
+        return;
+    }
+
+    let html = "";
+    history.forEach(item => {
+        let color = item.risk > 60 ? "red" : item.risk >= 40 ? "orange" : "green";
+
+        html += `
+        <div style="
+            background:#f9f9f9;
+            padding:15px;
+            border-left:6px solid ${color};
+            border-radius:10px;
+            margin-bottom:10px;
+        ">
+            <b>${item.type}</b> — 
+            <span style="color:${color}; font-weight:bold;">
+                ${item.status} (${item.risk}%)
+            </span><br>
+            <small>${item.time}</small><br>
+            <small>${item.details}</small>
+        </div>`;
+    });
+
+    container.innerHTML = html;
+}
+
+function clearHistory() {
+    localStorage.removeItem("fraudHistory");
+    renderHistory();
+}
+
+// Load history on page open
+renderHistory();
+</script>
+<script>
+google.charts.load('current', {'packages':['corechart']});
+google.charts.setOnLoadCallback(drawFraudChart);
+
+function drawFraudChart() {
+    const history = JSON.parse(localStorage.getItem("fraudHistory")) || [];
+    const chartDiv = document.getElementById("fraudChart");
+
+    // ✅ HIDE chart if no history
+    if (history.length === 0) {
+        chartDiv.style.display = "none";
+        return;
+    }
+
+    chartDiv.style.display = "block";
+
+    let safe = 0, medium = 0, fraud = 0;
+
+    history.forEach(item => {
+        if (item.risk > 60) fraud++;
+        else if (item.risk >= 40) medium++;
+        else safe++;
+    });
+
+    const data = google.visualization.arrayToDataTable([
+        ['Risk Level', 'Count'],
+        ['Safe', safe],
+        ['Medium Risk', medium],
+        ['Fraud', fraud]
+    ]);
+
+    const options = {
+        title: 'Fraud Risk Distribution',
+        pieHole: 0.4,
+        colors: ['#2ecc71', '#f39c12', '#e74c3c'],
+        legend: { position: 'bottom' }
+    };
+
+    const chart = new google.visualization.PieChart(
+        document.getElementById('fraudChart')
+    );
+
+    chart.draw(data, options);
+}
+
+// redraw chart whenever history updates
+const originalSaveHistory = saveHistory;
+saveHistory = function(...args) {
+    originalSaveHistory(...args);
+    drawFraudChart();
+};
+</script>
+<script>
+function getDeviceInfo() {
+    return navigator.userAgent;
+}
+</script>
+<script>
+function toggleTheme() {
+    document.body.classList.toggle("dark");
+
+    if (document.body.classList.contains("dark")) {
+        localStorage.setItem("theme", "dark");
+    } else {
+        localStorage.setItem("theme", "light");
+    }
+
+    drawFraudChart();
+}
+
+/* Apply saved theme when page loads */
+if (localStorage.getItem("theme") === "dark") {
+    document.body.classList.add("dark");
+}
+</script>
+<script>
+/* Apply saved theme */
+if (localStorage.getItem("theme") === "dark") {
+    document.body.classList.add("dark");
+}
+</script>
+
+</body>
+</html>

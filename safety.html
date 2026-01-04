@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Safety</title>
+<!-- Google Font: Roboto -->
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+body {
+    margin:0;
+    font-family: 'Roboto', Arial, sans-serif;
+    background: #eef2f3;
+}
+.top-home {
+    text-align:center;
+    margin:20px 0;
+}
+.top-home a {
+    padding:10px 25px;
+    background: linear-gradient(135deg, #43cea2, #185a9d);
+    color:white;
+    text-decoration:none;
+    font-weight:bold;
+    border-radius:25px;
+    transition:0.3s;
+}
+.top-home a:hover {
+    opacity:0.9;
+}
+.page-wrapper {
+    display:flex;
+    justify-content:center;
+    align-items:flex-start;
+    padding:20px;
+}
+.content-card {
+    background:white;
+    width:90%;
+    max-width:800px;
+    padding:40px;
+    border-radius:15px;
+    border:2px solid #185a9d; /* Bordered effect */
+    box-shadow:0 10px 25px rgba(0,0,0,0.2);
+}
+.content-card h1 {
+    color:#1f3c5b;
+    text-align:center;
+    margin-bottom:20px;
+}
+.content-card h2 {
+    color:#185a9d;
+    margin-top:20px;
+    margin-bottom:10px;
+}
+.content-card p {
+    font-size:16px;
+    color:#555;
+    line-height:1.6;
+    margin-bottom:15px;
+}
+/* ========================= */
+/* 🌙 GLOBAL DARK MODE CSS */
+/* ========================= */
+
+body.dark {
+    background: #121212;
+    color: #f1f1f1;
+}
+
+/* Cards / white boxes */
+body.dark .login-card,
+body.dark .content-card,
+body.dark .card {
+    background: #1e1e1e;
+    color: #f1f1f1;
+}
+
+/* Inputs */
+body.dark input,
+body.dark textarea {
+    background: #2c2c2c;
+    color: white;
+    border: 1px solid #444;
+}
+
+body.dark input::placeholder {
+    color: #aaa;
+}
+
+/* Buttons */
+body.dark button {
+    color: white;
+}
+
+/* OR divider lines */
+body.dark .or-divider::before,
+body.dark .or-divider::after {
+    background: #555;
+}
+/* 🌙 Dark mode toggle button */
+.theme-toggle {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: none;
+    background: #f1f1f1;
+    font-size: 18px;
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+}
+
+/* Dark mode button color */
+body.dark .theme-toggle {
+    background: #2c2c2c;
+    color: white;
+}
+</style>
+</head>
+<body>
+    <script>
+if (!sessionStorage.getItem("loggedIn")) {
+    window.location.href = "login.html";
+}
+</script>
+
+<!-- Home Button -->
+<div class="top-home">
+    <a href="index.html">Home</a>
+</div>
+
+<div class="page-wrapper">
+    <div class="content-card">
+        <button class="theme-toggle" onclick="toggleTheme()">🌙</button>
+        <h1>Online Safety Tips</h1>
+        
+        <p>Staying safe online is crucial in today’s digital world. Fraudsters and scammers are constantly finding new ways to trick users. 
+        By following simple safety measures, you can protect your personal information, financial data, and digital identity.</p>
+
+        <h2>1. Protect Your Personal Information</h2>
+        <p>Never share sensitive details such as passwords, OTPs, bank account information, or personal identification numbers over email, social media, or unknown websites.</p>
+
+        <h2>2. Be Cautious With Links and Attachments</h2>
+        <p>Do not click on suspicious links or download attachments from unknown sources. Scammers often use phishing emails to trick you into sharing information.</p>
+
+        <h2>3. Use Strong and Unique Passwords</h2>
+        <p>Always use strong, unique passwords for different accounts. Enable two-factor authentication (2FA) wherever possible to add an extra layer of security.</p>
+
+        <h2>4. Keep Your Devices Secure</h2>
+        <p>Ensure your devices have updated antivirus software and operating system updates. Avoid using public Wi-Fi for sensitive transactions.</p>
+
+        <h2>5. Verify Before You Trust</h2>
+        <p>Always verify the source before acting on any message, email, or transaction request. If something seems suspicious, double-check with official channels.</p>
+
+        <p style="font-weight:bold; color:#1f3c5b; text-align:center; margin-top:30px;">
+            Stay vigilant, stay safe, and protect your digital world!
+        </p>
+    </div>
+</div>
+<script>
+function toggleTheme() {
+    document.body.classList.toggle("dark");
+
+    if (document.body.classList.contains("dark")) {
+        localStorage.setItem("theme", "dark");
+    } else {
+        localStorage.setItem("theme", "light");
+    }
+}
+
+/* Apply saved theme when page loads */
+if (localStorage.getItem("theme") === "dark") {
+    document.body.classList.add("dark");
+}
+</script>
+
+</body>
+</html>

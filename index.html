@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Fraud Awareness Portal</title>
+
+<link rel="stylesheet" href="css/style.css">
+</head>
+
+<!-- Google Font: Roboto -->
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+body {
+    margin:0;
+    font-family: 'Roboto', Arial, sans-serif;
+    background: #eef2f3;
+}
+.page-wrapper {
+    min-height: 100vh;
+    display:flex;
+    flex-direction:column;
+    justify-content:flex-start;
+    align-items:center;
+    padding:40px 20px;
+}
+.header {
+    text-align:center;
+    margin-bottom:30px;
+}
+.header h1 {
+    color:#1f3c5b;
+    font-size:36px;
+    margin-bottom:10px;
+}
+.header p {
+    font-size:18px;
+    color:#555;
+    max-width:700px;
+    margin:0 auto;
+    line-height:1.6;
+}
+.home-buttons {
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:center;
+    gap:20px;
+    margin-top:30px;
+}
+.home-buttons a {
+    padding:15px 30px;
+    background: linear-gradient(135deg, #ff6a00, #ee0979);
+    color:white;
+    text-decoration:none;
+    font-weight:bold;
+    border-radius:25px;
+    transition: all 0.3s ease;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+}
+.home-buttons a:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 28px rgba(0,0,0,0.4);
+}
+.home-intro {
+    margin-top:40px;
+    text-align:center;
+}
+.home-intro img {
+    width: 400px;          /* 👈 increased size */
+    max-width: 90%;
+    border-radius: 20px;
+    margin-bottom: 25px;
+}
+.home-intro h2 {
+    color:#1f3c5b;
+    margin-bottom:15px;
+}
+.home-intro p {
+    font-size:16px;
+    color:#555;
+    line-height:1.6;
+    max-width:600px;
+    margin:0 auto;
+}
+/* ========================= */
+/* 🌙 GLOBAL DARK MODE CSS */
+/* ========================= */
+
+body.dark {
+    background: #121212;
+    color: #f1f1f1;
+}
+
+/* Cards / white boxes */
+body.dark .login-card,
+body.dark .content-card,
+body.dark .card {
+    background: #1e1e1e;
+    color: #f1f1f1;
+}
+
+/* Inputs */
+body.dark input,
+body.dark textarea {
+    background: #2c2c2c;
+    color: white;
+    border: 1px solid #444;
+}
+
+body.dark input::placeholder {
+    color: #aaa;
+}
+
+/* Buttons */
+body.dark button {
+    color: white;
+}
+
+/* OR divider lines */
+body.dark .or-divider::before,
+body.dark .or-divider::after {
+    background: #555;
+}
+/* 🌙 Dark mode toggle button */
+.theme-toggle {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: none;
+    background: #f1f1f1;
+    font-size: 18px;
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+}
+
+/* Dark mode button color */
+body.dark .theme-toggle {
+    background: #2c2c2c;
+    color: white;
+}
+</style>
+</head>
+<body>
+    <script>
+if (!sessionStorage.getItem("loggedIn")) {
+    window.location.href = "login.html";
+}
+</script>
+
+<div class="page-wrapper">
+    <div style="
+    width:100%;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:20px;
+">
+    <!-- LEFT SIDE -->
+    <div style="font-weight:bold; color:#1f3c5b;">
+        Welcome, <span id="welcomeUser">User</span>
+    </div>
+
+    <!-- RIGHT SIDE -->
+    <div>
+        <a href="admin.html" id="adminBtn" style="
+            display:none;
+            margin-right:15px;
+            padding:8px 18px;
+            background:#1f3c5b;
+            color:white;
+            text-decoration:none;
+            border-radius:20px;
+            font-weight:bold;
+        ">
+            Admin Dashboard
+        </a>
+
+        <button onclick="logout()" style="
+            padding:8px 20px;
+            border:none;
+            border-radius:20px;
+            background:#e74c3c;
+            color:white;
+            font-weight:bold;
+            cursor:pointer;">
+            Logout
+        </button>
+    </div>
+</div>
+
+    
+    <div class="header">
+        <h1>Fraud Awareness Portal</h1>
+        <p>Learn about online frauds, detect suspicious messages, and verify transactions. Stay alert and protect yourself from scams.</p>
+    </div>
+
+    
+    <div class="home-buttons">
+        <a href="frauds.html">Frauds</a>
+        <a href="safety.html">Safety</a>
+        <a href="help.html">Help</a>
+        <a href="contact.html">Contact</a>
+    </div>
+
+   
+    <div class="home-intro">
+        <button class="theme-toggle" onclick="toggleTheme()">🌙</button>
+        <img src="images/Fraud-Detection-Software.webp"alt="Fraud Awareness">
+        <h2>Stay Alert. Stay Safe.</h2>
+        <p>Welcome to our Fraud Awareness Portal! Explore the tools above to learn about online frauds, detect suspicious messages, and verify transactions. Protect yourself and your loved ones by staying informed and aware of potential scams.</p>
+    </div>
+
+</div>
+<script src="js/script.js"></script>
+<script>
+function toggleTheme() {
+    document.body.classList.toggle("dark");
+
+    if (document.body.classList.contains("dark")) {
+        localStorage.setItem("theme", "dark");
+    } else {
+        localStorage.setItem("theme", "light");
+    }
+}
+
+/* Apply saved theme when page loads */
+if (localStorage.getItem("theme") === "dark") {
+    document.body.classList.add("dark");
+}
+</script>
+</body>
+</html>
