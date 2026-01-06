@@ -114,3 +114,10 @@ Username: admin
 Password: 1234  
 Or  
 Sign in using Google  
+# 🤝🏻 Team
+Hackathon Team - HackInnov8ors  
+Team members:  
+1. V. B. Kumar(Leader)
+2. P. Harsha Vardhan
+3. K. S. V. T. Sureshma
+4. D. Rashmi  
